@@ -63,13 +63,5 @@ namespace PalindromeTest
             bool actual = Program.isPalindromeOrAnagramOfPalindrome(input);
             Assert.AreEqual(expected, actual);
         }
-        [TestMethod]
-        public void TestMethod8()
-        {
-            string input = "silentsiltn";
-            bool expected = true;
-            bool actual = Program.isPalindromeOrAnagramOfPalindrome(input);
-            Assert.AreEqual(expected, actual);
-        }
     }
 }

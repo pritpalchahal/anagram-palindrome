@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Palindrome
 {
@@ -7,99 +9,79 @@ namespace Palindrome
     {
         static void Main(string[] args)
         {
+            //if no input supplied
             if(args.Length == 0)
             {
-                Console.WriteLine("supply input string!");
+                Console.WriteLine("Error: supply input string!");
                 return;
             }
+            //if too many inputs
             if (args.Length > 1)
             {
-                Console.WriteLine("supply only one input string!");
+                Console.WriteLine("Error: supply only one input string!");
                 return;
             }
+            //if input does not meet assumptions
+            if(!Regex.IsMatch(args[0], "^[a-z]+$"))
+            {
+                Console.WriteLine("Error: Invalid input string. Make sure: "
+                    +"\n    There will be no whitespace in the string."
+                    +"\n    All characters in the string will be lower case."
+                    +"\n    The string will only contain alpha characters a-z");
+                return;
+            }
+
             string input = args[0];
-
-            Console.WriteLine("AofP - "+isAnagramOfPalindrome(input));
-            Console.WriteLine("P - " + isPalindrome(input));
-
             bool result = isPalindromeOrAnagramOfPalindrome(input);
             Console.WriteLine("Result: " + result);
-
-            //Console.WriteLine("Press any key to exit...");
-            //Console.ReadKey();
         }
 
+        /**
+         * Method takes an input string and returns true if it is a palindrome
+         * or an anagram of a palindrome, false otherwise.
+         * @param input
+         * */
         public static bool isPalindromeOrAnagramOfPalindrome(string input)
         {
-            List<char> vals = new List<char>();
+            int[] val = new int[26];//min required space is 26 because of assumptions
             bool isP = true;
-            for (int i = 0, j = input.Length - 1; i <= j; i++, j--)
+            //traverse from both sides
+            for(int i = 0, j = input.Length - 1; i <= j; i++, j--)
             {
                 char a = input[i];
                 char b = input[j];
                 if (a != b)
                 {
                     isP = false;//not a palindrome
-
-                    if (vals.Contains(a)) vals.Remove(a);
-                    else vals.Add(a);
-                    if (vals.Contains(b)) vals.Remove(b);
-                    else vals.Add(b);
+                    val[a - 'a']++;
+                    val[b - 'a']++;
                 }
-                if (a == b)
+                if(i == j)//middle case in case of odd length
                 {
-                    if (vals.Contains(a)) vals.Remove(a);
+                    val[a - 'a']--;
                 }
             }
-
             if (isP)
             {
-                Console.WriteLine(String.Format("\"{0}\" is a Palindrome.",input));
+                Console.WriteLine(String.Format("\"{0}\" is a Palindrome.", input));
                 return true;
             }
-            else if (vals.Count <= 1)
+
+            int count = 0;
+            foreach(int i in val)
             {
-                Console.WriteLine(String.Format("\"{0}\" is an Anagram of a Palindrome.",input));
+                if(i % 2 == 1)
+                {
+                    count++;//chars which occured odd no of times in input
+                }
+            }
+            if (count <= 1)
+            {
+                Console.WriteLine(String.Format("\"{0}\" is an Anagram of a Palindrome.", input));
                 return true;
             }
-            else
-            {
-                Console.WriteLine("Neither a Palindrome nor an Anagram of a Palindrome.");
-                return false;
-            }
-        }
 
-        public static bool isPalindrome(string input)
-        {
-            for (int i = 0, j = input.Length - 1; i < j; i++, j--)
-            {
-                char a = input[i];
-                char b = input[j];
-                if (a != b)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static bool isAnagramOfPalindrome(string input)
-        {
-            List<char> vals = new List<char>();
-            foreach(char c in input)
-            {
-                if (vals.Contains(c))
-                {
-                    vals.Remove(c);
-                }
-                else
-                {
-                    vals.Add(c);
-                }
-            }
-
-            if (vals.Count <= 1) return true;
-
+            Console.WriteLine("Neither a Palindrome nor an Anagram of a Palindrome.");
             return false;
         }
     }
