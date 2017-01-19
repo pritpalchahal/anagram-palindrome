@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Palindrome
@@ -25,9 +23,9 @@ namespace Palindrome
             if(!Regex.IsMatch(args[0], "^[a-z]+$"))
             {
                 Console.WriteLine("Error: Invalid input string. Make sure: "
-                    +"\n    There will be no whitespace in the string."
-                    +"\n    All characters in the string will be lower case."
-                    +"\n    The string will only contain alpha characters a-z");
+                    +"\n\t1. There will be no whitespace in the string."
+                    +"\n\t2. All characters in the string will be lower case."
+                    +"\n\t3. The string will only contain alpha characters a-z");
                 return;
             }
 
@@ -43,7 +41,7 @@ namespace Palindrome
          * */
         public static bool isPalindromeOrAnagramOfPalindrome(string input)
         {
-            int[] val = new int[26];//min required space is 26 because of assumptions
+            int[] vals = new int[26];//min required space is 26 because of assumptions
             bool isP = true;
             //traverse from both sides
             for(int i = 0, j = input.Length - 1; i <= j; i++, j--)
@@ -53,12 +51,12 @@ namespace Palindrome
                 if (a != b)
                 {
                     isP = false;//not a palindrome
-                    val[a - 'a']++;
-                    val[b - 'a']++;
+                    vals[a - 'a']++;
+                    vals[b - 'a']++;
                 }
-                if(i == j)//middle case in case of odd length
+                if(i == j)//middle value in case of odd length
                 {
-                    val[a - 'a']--;
+                    vals[a - 'a']--;
                 }
             }
             if (isP)
@@ -68,13 +66,14 @@ namespace Palindrome
             }
 
             int count = 0;
-            foreach(int i in val)
+            foreach(int i in vals)
             {
                 if(i % 2 == 1)
                 {
                     count++;//chars which occured odd no of times in input
                 }
             }
+            //is an anagram if odd chars are either 1 or none
             if (count <= 1)
             {
                 Console.WriteLine(String.Format("\"{0}\" is an Anagram of a Palindrome.", input));
